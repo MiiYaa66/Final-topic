@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: #B2BFD4;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title  >MBTI</title>
+<style>
+   
+   @import url('https://fonts.cdnfonts.com/css/lazy-dog');
+
+  body {
+    font-family:'Lazy Dog', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #B2BFD4;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+  .btn {
+    display: inline-block;
+    width: 8%; /* 設置按鈕的寬度 */
+    padding-top: 4%;
+    padding-bottom: 4%;
+    padding-right: 2%;
+    
+    /*height: 4%;/ /* 設置按鈕的高度 */
+    margin: 2%;
+    border: none;
+    border-radius: 5%;
+    background-color: #b6beb6;
+    color: rgb(10, 1, 1);
+    text-decoration: none;
+    font-size: calc( 2vw);
+    cursor: pointer;
+  }
+  .btn:hover {
+    background-color: #0d0e0d;
+  }
+  .btn-primary {
+    background-color: #516FA2;
+  }
+  .btn-primary:hover {
+    background-color: #939f94;
+  }
+  .btn-link {
+    background-color: transparent;
+    color: #030303;
+  }
+  .btn-link:hover {
+    color: #ff6600;
+  }
+  .btn-circle {
+    border-radius: 50%;
+  }
+  .btn-group {
+    margin: 20px 0;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1 style="font-size:  calc( 4vw);">MBTI Journey Maps</h1>
+  <div class="btn-group">
+    <button type="button" style="font-family:'Lazy Dog' ; background-color: #FFEAB2;" class="btn btn-primary" id="E">E</button>
+    <button type="button" style="font-family:'Lazy Dog' ; background-color: #FFD5B2;" class="btn btn-primary" id="S">S</button>
+    <button type="button" style="font-family:'Lazy Dog' ; background-color: #CFFFB2;" class="btn btn-primary" id="T">T</button>
+    <button type="button" style="font-family:'Lazy Dog' ; background-color: #FFBBB2;" class="btn btn-primary" id="J">J</button>
+  </div>
+  <div class="btn-group">
+    <button type="button" style="font-family:'Lazy Dog' ; background-color: #FFEAB2;" class="btn btn-primary" id="I">I</button>
+    <button type="button" style="font-family:'Lazy Dog' ; background-color: #FFD5B2;" class="btn btn-primary" id="N">N</button>
+    <button type="button" style="font-family:'Lazy Dog' ; background-color: #CFFFB2;" class="btn btn-primary" id="F">F</button>
+    <button type="button" style="font-family:'Lazy Dog' ; background-color: #FFBBB2;" class="btn btn-primary" id="P">P</button>
+  </div>
+  <div>
+    <a href="#" style="width: 15%;height: 5%;" class="btn btn-primary btn-circle" id="GO">GO</a>
+  </div>
+  <div>
+    <a href="https://www.16personalities.com/tw/%E6%80%A7%E6%A0%BC%E6%B8%AC%E8%A9%A6" target="_blank" class="btn btn-link">I Don't Know My MBTI</a>
+  </div>
+  <div id="result"></div>
+</div>
+
+<script>
+  let btns = document.querySelectorAll('.btn');
+  let mbti = '';
+  
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.id === 'E') {
+        
+        document.getElementById('I').style.backgroundColor = '#FFEAB2';
+      } else if (btn.id === 'I') {
+        
+        document.getElementById('E').style.backgroundColor = '#FFEAB2';
+      } else if (btn.id === 'S') {
+       
+        document.getElementById('N').style.backgroundColor = '#FFD5B2';
+      } else if (btn.id === 'N') {
+        
+        document.getElementById('S').style.backgroundColor = '#FFD5B2';
+      } else if (btn.id === 'T') {
+        
+        document.getElementById('F').style.backgroundColor = '#CFFFB2';
+      } else if (btn.id === 'F') {
+        
+        document.getElementById('T').style.backgroundColor = '#CFFFB2';
+      } else if (btn.id === 'J') {
+        
+        document.getElementById('P').style.backgroundColor = '#FFBBB2';
+      } else if (btn.id === 'P') {
+        
+        document.getElementById('J').style.backgroundColor = '#FFBBB2';
+      }
+      
+      btn.style.backgroundColor = btn.style.backgroundColor === '#939f94' ? '#939f94' : '#939f94';
+    });
+  });
+
+  let m = 6,b = 6, t = 6, i=6;
+  document.getElementById('E').addEventListener('click', function() {
+    m = 0;
+    console.log(m);
+  });
+
+  document.getElementById('I').addEventListener('click', function() {
+    m = 1;
+    console.log(m);
+  });
+
+  document.getElementById('S').addEventListener('click', function() {
+    b = 0;
+    console.log(b);
+  });
+
+  document.getElementById('N').addEventListener('click', function() {
+    b = 1;
+    console.log(b);
+  });
+
+  document.getElementById('T').addEventListener('click', function() {
+    t = 0;
+    console.log(t);
+  });
+
+  document.getElementById('F').addEventListener('click', function() {
+    t = 1;
+    console.log(t);
+  });
+  document.getElementById('J').addEventListener('click', function() {
+    i = 0;
+    console.log(i);
+  });
+
+  document.getElementById('P').addEventListener('click', function() {
+    i = 1;
+    console.log(i);
+  });
+  
+
+
+  document.getElementById('GO').addEventListener('click', function() {
+    mbti=m.toString()+b.toString()+t.toString()+i.toString();
+    console.log(mbti);
+    if (mbti=='0000'){  /* ESTJ */
+      window.location.href = "ESTJ.HTML";
+    }else if (mbti=='1000') { /* ISTJ */
+      window.location.href = "ISTJ.HTML";
+    }else if (mbti=='0100') { /* ENTJ */
+      window.location.href = "ENTJ.HTML";
+    }else if (mbti=='0010') { /* ESFJ */
+      window.location.href = "ESFJ.HTML";
+    }else if (mbti=='0001') { /* ESTP */
+      window.location.href = "ESTP.HTML";
+    }else if (mbti=='1100') { /* INTJ */
+      window.location.href = "INTJ.HTML";
+    }else if (mbti=='1010') { /* ISFJ */
+      window.location.href = "ISFJ.HTML";
+    }else if (mbti=='1001') { /* ISTP */
+      window.location.href = "ISTP.HTML";
+    }else if (mbti=='0110') { /* ENFJ */
+      window.location.href = "ENFJ.HTML";
+    }else if (mbti=='0101') { /* ENTP */
+      window.location.href = "ENTP.HTML";
+    }else if (mbti=='0011') { /* ESFP */
+      window.location.href = "ESFP.HTML";
+    }else if (mbti=='1110') { /* INFJ */
+      window.location.href = "INFJ.HTML";
+    }else if (mbti=='1101') { /* INTP */
+      window.location.href = "INTP.HTML";
+    }else if (mbti=='1011') { /* ISFP */
+      window.location.href = "ISFP.HTML";
+    }else if (mbti=='0111') { /* ENFP */
+      window.location.href = "ENFP.HTML";
+    }else if (mbti=='1111') { /* INFP */
+      window.location.href = "INFP.HTML";
+    }else {
+      alert("請點選您的MBTI");
+      document.getElementById('GO').style.backgroundColor = '#516FA2'
+    }
+
+
+
+
+
+  });
+  
+</script>
+</body>
+</html>s

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<!--
+ @license
+ Copyright 2019 Google LLC. All Rights Reserved.
+ SPDX-License-Identifier: Apache-2.0
+-->
+<html>
+  <head>
+    <title>MAP</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <style>
+      /* CSS 样式 */
+      /* Always set the map height explicitly to define the size of the div element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      
+      body {
+        padding: 0 !important;
+        background-color: #606356;
+      }
+      
+      table {
+        font-size: 12px;
+      }
+      
+      .hotel-search {
+        align-items: center;
+        background: #606356;
+        display: flex;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 440px;
+        z-index: 1;
+      }
+      
+      #map {
+        height: calc(70vh - 20px); /* 視窗高度的一半減去一些邊距 */
+        width: calc(70vw - 20px); /* 視窗寬度的一半減去一些邊距 */
+        margin: calc(15vh) auto 0 auto; /* 垂直置中 */
+      }
+      
+      #listing {
+        position: absolute;
+        width: 200px;
+        height: 470px;
+        overflow: auto;
+        right: 20px;
+        top: 110px;
+        cursor: pointer;
+        overflow-x: hidden;
+      }
+      
+      #findhotels {
+        font-size: 14px;
+      }
+      
+      #locationField {
+        flex: 1 1 190px;
+        margin: 0 8px;
+      }
+      
+      #controls {
+        flex: 1 1 140px;
+      }
+      
+      #autocomplete {
+        width: 100%;
+      }
+      
+      #country {
+        width: 100%;
+      }
+      
+      .placeIcon {
+        width: 20px;
+        height: 34px;
+        margin: 4px;
+      }
+      
+      .hotelIcon {
+        width: 24px;
+        height: 24px;
+      }
+      
+      #resultsTable {
+        border-collapse: collapse;
+        width: 240px;
+      }
+      
+      #rating {
+        font-size: 13px;
+        font-family: Arial Unicode MS;
+      }
+      
+      .iw_table_row {
+        height: 18px;
+      }
+      
+      .iw_attribute_name {
+        font-weight: bold;
+        text-align: right;
+      }
+      
+      .iw_table_icon {
+        text-align: right;
+      }
+
+      /* Button styles */
+      #buttons {
+        margin-top: 10px;
+        text-align: center; /* 讓按鈕置中 */
+      }
+
+      #buttons button {
+        margin-right: 10px;
+        background-color: #4CAF50; /* 綠色 */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      #buttons button:hover {
+        background-color: #45a049; /* 較深綠色 */
+      }
+
+      #buttons button:focus {
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hotel-search">
+      <div id="findhotels"></div>
+
+      <div id="locationField">
+        <select id="autocomplete">
+          <option value="">選擇城市</option>
+        </select>
+      </div>
+
+      <div id="controls">
+        <select id="country" onchange="updateCityOptions()">
+          <option value="th">泰國</option>
+          <option value="jp">日本</option>
+          <option value="au">澳洲</option>
+          <option value="us">美國</option>
+          <option value="tw">台灣</option>
+          <option value="kr">韓國</option>
+          <option value="gr">希臘</option>
+          <option value="de">德國</option>
+          <option value="in">印度</option>
+          <option value="br">巴西</option>
+          <option value="it">義大利</option>
+          <option value="es">西班牙</option>
+          <option value="is">冰島</option>
+          <option value="nl">荷蘭</option>
+          <option value="ch">瑞士</option>
+          <option value="mn">蒙古</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="map"></div>
+
+    <div id="listing">
+      <table id="resultsTable">
+        <tbody id="results"></tbody>
+      </table>
+    </div>
+
+    <div id="buttons">
+      <button onclick="searchPlaces('lodging')">住宿</button>
+      <button onclick="searchPlaces('restaurant')">食物</button>
+      <button onclick="searchPlaces('tourist_attraction')">景點</button>
+    </div>
+
+    <div style="display: none">
+      <div id="info-content">
+        <table>
+          <tr id="iw-url-row" class="iw_table_row">
+            <td id="iw-icon" class="iw_table_icon"></td>
+            <td id="iw-url"></td>
+          </tr>
+          <tr id="iw-address-row" class="iw_table_row">
+            <td class="iw_attribute_name">Address:</td>
+            <td id="iw-address"></td>
+          </tr>
+          <tr id="iw-phone-row" class="iw_table_row">
+            <td class="iw_attribute_name">Telephone:</td>
+            <td id="iw-phone"></td>
+          </tr>
+          <tr id="iw-rating-row" class="iw_table_row">
+            <td class="iw_attribute_name">Rating:</td>
+            <td id="iw-rating"></td>
+          </tr>
+          <tr id="iw-website-row" class="iw_table_row">
+            <td class="iw_attribute_name">Website:</td>
+            <td id="iw-website"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxaoQ-HyPwnOuXxuKTzeDmuLgq1SLPiqc&callback=initMap&libraries=places&v=weekly" defer></script>
+
+    
+    <script>
+// 获取当前页面的 URL
+var currentUrl = window.location.href;
+
+// 解析 URL 中的查询参数
+var urlSearchParams = new URLSearchParams(currentUrl.split('?')[1]);
+
+// 获取查询参数中的国家代码参数值
+
+if (urlSearchParams.has('ct')) {
+            var countryParam = urlSearchParams.get('ct');
+            console.log('countryParam Value:', countryParam);
+        } else {
+          countryParam="tw";
+        }
+console.log(countryParam);
+
+      let map;
+      let places;
+      let infoWindow;
+      let markers = [];
+      let autocomplete;
+      const MARKER_PATH = "https://developers.google.com/maps/documentation/javascript/images/marker_green";
+      const hostnameRegexp = new RegExp("^https?://.+?/");
+      const countries = {
+        th: { center: { lat: 15, lng: 101 }, zoom: 5 },
+        jp: { center: { lat: 36, lng: 138 }, zoom: 5 },
+        au: { center: { lat: -25.3, lng: 133.8 }, zoom: 4 },
+        us: { center: { lat: 37.1, lng: -95.7 }, zoom: 3 },
+        tw: { center: { lat: 23.7, lng: 121 }, zoom: 7 },
+        kr: { center: { lat: 36, lng: 128 }, zoom: 7 },
+        gr: { center: { lat: 39, lng: 22 }, zoom: 6 },
+        de: { center: { lat: 51, lng: 10 }, zoom: 6 },
+        in: { center: { lat: 20, lng: 77 }, zoom: 5 },
+        br: { center: { lat: -14.2, lng: -51.9 }, zoom: 4 },
+        it: { center: { lat: 41.9, lng: 12.6 }, zoom: 6 },
+        es: { center: { lat: 40.5, lng: -3.7 }, zoom: 6 },
+        is: { center: { lat: 65, lng: -18 }, zoom: 6 },
+        nl: { center: { lat: 52.1, lng: 5.3 }, zoom: 7 },
+        ch: { center: { lat: 47, lng: 8 }, zoom: 7 },
+        mn: { center: { lat: 47.9, lng: 106.9 }, zoom: 5 }
+      };
+
+      const cityList = {
+        th: ["曼谷", "普吉", "清邁", "芭堤雅", "素可泰", "合艾", "帕岸", "帕塔亞", "泰國北部", "皮皮岛"],
+        jp: ["東京", "大阪", "京都", "北海道", "福岡", "沖繩", "札幌", "名古屋", "神戶", "奈良"],
+        au: ["悉尼", "墨爾本", "布里斯本", "黃金海岸", "阿德雷德", "珀斯", "凱恩斯", "達爾文", "坎培拉", "凱卧"],
+        us: ["紐約", "洛杉磯", "芝加哥", "拉斯維加斯", "三藩市", "華盛頓", "奧蘭多", "邁阿密", "波士頓", "夏威夷"],
+        tw: ["台北", "新北", "桃園", "台中", "台南", "高雄", "基隆", "新竹", "嘉義", "苗栗"],
+        kr: ["首爾", "釜山", "濟州", "仁川", "江原道", "忠清北道", "忠清南道", "全羅北道", "全羅南道", "庆尚北道"],
+        gr: ["雅典", "梅蒂納", "克里特", "羅德斯", "庫法", "德爾菲", "薩莫斯", "科孚", "萨尔尼亚", "米科诺斯"],
+        de: ["柏林", "慕尼黑", "法蘭克福", "漢堡", "杜塞爾多夫", "科隆", "萊比錫", "斯圖加特", "紐倫堡", "漢諾威"],
+        in: ["德里", "孟買", "班加羅爾", "海德拉巴", "加爾各答", "清奈", "阿姆利則", "浦那", "亞格拉", "印多爾"],
+        br: ["里約熱內盧", "聖保羅", "巴西利亞", "薩爾瓦多", "伊瓜蘇", "貝洛奧里藏特", "福塔雷薩", "庫里蒂巴", "米納斯吉拉斯", "圣路易斯"],
+        it: ["羅馬", "米蘭", "佛羅倫斯", "威尼斯", "那不勒斯", "比薩", "米蘭", "錫耶納", "博洛尼亞", "烏迪內"],
+        es: ["巴塞羅那", "馬德里", "瓦倫西亞", "塞維利亞", "馬拉加", "比爾包", "格拉納達", "托雷多", "科爾多瓦", "馬略卡"],
+        is: ["雷克雅未克", "蓋澤爾菲厄斯", "維克", "胡薩維克", "艾斯基斯胡爾", "布雷德伊斯基爾", "斯奈山", "默德斯納斯", "赫費爾納內斯", "哈米爾"],
+        nl: ["阿姆斯特丹", "鹿特丹", "海牙", "烏特勒支", "恩斯赫德", "蘭斯登", "米德爾堡", "格羅寧根", "哈勒姆", "布雷達"],
+        ch: ["蘇黎世", "日內瓦", "巴塞爾", "洛桑", "伯恩", "盧塞恩", "圖恩", "聖加侖", "卢加诺", "布里格"],
+        mn: ["烏蘭巴托", "達爾汗烏勒", "蘭巴托", "鄂爾多斯", "科布多", "喀爾喀", "達爾汗烏勒", "烏蘭圖崔", "錫林浩特", "赤峰"]
+      };
+
+      function initMap() {
+        
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: countries[countryParam].zoom,
+          center: countries[countryParam].center,
+          mapTypeControl: false,
+          panControl: false,
+          zoomControl: false,
+          streetViewControl: false
+        });
+        infoWindow = new google.maps.InfoWindow({
+          content: document.getElementById("info-content")
+        });
+        autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"), {
+          types: ["(cities)"],
+          componentRestrictions: { country: countryParam },
+          fields: ["geometry"]
+        });
+        places = new google.maps.places.PlacesService(map);
+        autocomplete.addListener("place_changed", onPlaceChanged);
+        document.getElementById("country").addEventListener("change", setAutocompleteCountry);
+        updateCityOptions();
+
+         // 设置选定的国家
+    document.getElementById("country").value = countryParam;
+    
+    // 更新城市选项列表
+    updateCityOptions();
+      }
+
+      function onPlaceChanged() {
+        const place = autocomplete.getPlace();
+        if (place.geometry && place.geometry.location) {
+          map.panTo(place.geometry.location);
+          map.setZoom(15);
+          search();
+        } else {
+          document.getElementById("autocomplete").placeholder = "Enter a city";
+        }
+      }
+
+      function search() {
+        const search = {
+          bounds: map.getBounds(),
+          types: ["lodging"]
+        };
+        places.nearbySearch(search, (results, status, pagination) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+            clearResults();
+            clearMarkers();
+            for (let i = 0; i < results.length; i++) {
+              const markerLetter = String.fromCharCode("A".charCodeAt(0) + (i % 26));
+              const markerIcon = MARKER_PATH + markerLetter + ".png";
+              markers[i] = new google.maps.Marker({
+                position: results[i].geometry.location,
+                animation: google.maps.Animation.DROP,
+                icon: markerIcon
+              });
+              markers[i].placeResult = results[i];
+              google.maps.event.addListener(markers[i], "click", showInfoWindow);
+              setTimeout(dropMarker(i), i * 100);
+              addResult(results[i], i);
+            }
+          }
+        });
+      }
+
+      function clearMarkers() {
+        for (let i = 0; i < markers.length; i++) {
+          if (markers[i]) {
+            markers[i].setMap(null);
+          }
+        }
+        markers = [];
+      }
+
+      function setAutocompleteCountry() {
+        const country = document.getElementById("country").value;
+        if (country == "all") {
+          autocomplete.setComponentRestrictions({ country: [countryParam] });
+          map.setCenter({ lat: 15, lng: 101 });
+          map.setZoom(2);
+        } else {
+          autocomplete.setComponentRestrictions({ country: country });
+          map.setCenter(countries[country].center);
+          map.setZoom(countries[country].zoom);
+        }
+        clearResults();
+        clearMarkers();
+      }
+
+      function dropMarker(i) {
+        return function () {
+          markers[i].setMap(map);
+        };
+      }
+
+      function addResult(result, i) {
+        const results = document.getElementById("results");
+        const markerLetter = String.fromCharCode("A".charCodeAt(0) + (i % 26));
+        const markerIcon = MARKER_PATH + markerLetter + ".png";
+        const tr = document.createElement("tr");
+        tr.style.backgroundColor = i % 2 === 0 ? "#F0F0F0" : "#FFFFFF";
+        tr.onclick = function () {
+          google.maps.event.trigger(markers[i], "click");
+        };
+        const iconTd = document.createElement("td");
+        const nameTd = document.createElement("td");
+        const icon = document.createElement("img");
+        icon.src = markerIcon;
+        icon.setAttribute("class", "placeIcon");
+        icon.setAttribute("className", "placeIcon");
+        const name = document.createTextNode(result.name);
+        iconTd.appendChild(icon);
+        nameTd.appendChild(name);
+        tr.appendChild(iconTd);
+        tr.appendChild(nameTd);
+        results.appendChild(tr);
+      }
+
+      function clearResults() {
+        const results = document.getElementById("results");
+        while (results.childNodes[0]) {
+          results.removeChild(results.childNodes[0]);
+        }
+      }
+
+      function showInfoWindow() {
+        const marker = this;
+        places.getDetails({ placeId: marker.placeResult.place_id }, (place, status) => {
+          if (status !== google.maps.places.PlacesServiceStatus.OK) {
+            return;
+          }
+          infoWindow.open(map, marker);
+          buildIWContent(place);
+        });
+      }
+
+      function buildIWContent(place) {
+    document.getElementById("iw-icon").innerHTML =
+        '<img class="hotelIcon" ' + 'src="' + place.icon + '"/>';
+    document.getElementById("iw-url").innerHTML =
+        '<b><a href="' + place.url + '">' + place.name + "</a></b>";
+    document.getElementById("iw-address").textContent = place.vicinity;
+
+    if (place.formatted_phone_number) {
+        document.getElementById("iw-phone-row").style.display = "";
+        document.getElementById("iw-phone").textContent =
+            place.formatted_phone_number;
+    } else {
+        document.getElementById("iw-phone-row").style.display = "none";
+    }
+
+    // Assign a five-star rating to the hotel, using a black star ('&#10029;')
+    // to indicate the rating the hotel has earned, and a white star ('&#10025;')
+    // for the rating points not achieved.
+    if (place.rating) {
+        let ratingHtml = "";
+
+        for (let i = 0; i < 5; i++) {
+            if (place.rating < i + 0.5) {
+                ratingHtml += "&#10025;";
+            } else {
+                ratingHtml += "&#10029;";
+            }
+        }
+
+        document.getElementById("iw-rating-row").style.display = "";
+        document.getElementById("iw-rating").innerHTML = ratingHtml;
+    } else {
+        document.getElementById("iw-rating-row").style.display = "none";
+    }
+
+    // The regexp isolates the first part of the URL (domain plus subdomain)
+    // to give a short URL for displaying in the info window.
+    if (place.website) {
+        let fullUrl = place.website;
+        let website = hostnameRegexp.exec(place.website);
+
+        if (website === null) {
+            website = "https://www.google.com/search?q=cache:" + place.website;
+        } else {
+            website = "https://" + website[0];
+        }
+
+        document.getElementById("iw-website-row").style.display = "";
+        document.getElementById("iw-website").innerHTML =
+            '<a href="' + website + '">' + fullUrl + "</a>";
+    } else {
+        document.getElementById("iw-website-row").style.display = "none";
+    }
+}
+
+function searchPlaces(type) {
+    const search = {
+        bounds: map.getBounds(),
+        types: [type],
+    };
+
+    places.nearbySearch(search, (results, status, pagination) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+            clearResults();
+            clearMarkers();
+
+            for (let i = 0; i < results.length; i++) {
+                const markerLetter = String.fromCharCode("A".charCodeAt(0) + (i % 26));
+                const markerIcon = MARKER_PATH + markerLetter + ".png";
+
+                markers[i] = new google.maps.Marker({
+                    position: results[i].geometry.location,
+                    animation: google.maps.Animation.DROP,
+                    icon: markerIcon, // 使用原始的標記圖標
+                });
+                markers[i].placeResult = results[i];
+                google.maps.event.addListener(markers[i], "click", showInfoWindow);
+                setTimeout(dropMarker(i), i * 100);
+                addResult(results[i], i);
+            }
+        }
+    });
+}
+
+      function updateCityOptions() {
+        const selectedCountry = document.getElementById("country").value;
+        const citySelect = document.getElementById("autocomplete");
+        // Clear current options
+        citySelect.innerHTML = "";
+        // Add default option
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.text = "選擇城市";
+        citySelect.appendChild(defaultOption);
+        // Add city options based on selected country
+        const cities = cityList[selectedCountry];
+        cities.forEach((city) => {
+          const option = document.createElement("option");
+          option.value = city;
+          option.text = city;
+          citySelect.appendChild(option);
+        });
+      }
+    </script>
+  </body>
+</html>

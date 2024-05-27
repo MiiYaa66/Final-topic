@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript 練習</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+  }
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  p {
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>JavaScript CH3 Exam (ChatGPT)</h1>
+    <p>(1) 計算2的十次方: <span id="result1"></span></p>
+    <p>(2) 計算100除以7的商: <span id="quotient"></span></p>
+    <p>(2) 計算100除以7的餘數: <span id="remainder"></span></p>
+    <p>(3) 計算10除以3的結果並保留2位小數: <span id="result3"></span></p>
+    <p>(4) 將字串"5"轉換成數值型別，然後加上10: <span id="result4"></span></p>
+    <p>(5) 計算圓形的面積，半徑為7: <span id="result5"></span></p>
+    <p>(6) 將字串"hello"與字串"world"連起來: <span id="result6"></span></p>
+    <p>(7) 計算數字123的個位數字: <span id="result7"></span></p>
+    <p>(8) 將數字4轉換成字串型別，然後連接上字串"2": <span id="result8"></span></p>
+    <p>(9) 判斷數字15是否在10到20的範圍內: <span id="result9"></span></p>
+    <p>(10) 判斷字串"hello"是否既不是空字串也不是undefined: <span id="result10"></span></p>
+    <p>(11) 判斷數字25是否為偶數: <span id="result11"></span></p>
+    <p>(12) 比較數字x和數字y的大小: <span id="result12"></span></p>
+  </div>
+
+<script>
+  // (1) 計算2的十次方
+  document.getElementById("result1").innerText = 2 ** 10;
+
+  // (2) 計算100除以7的商和餘數
+  const quotient = Math.floor(100 / 7);
+  const remainder = 100 % 7;
+  document.getElementById("quotient").innerText = quotient;
+  document.getElementById("remainder").innerText = remainder;
+
+  // (3) 計算10除以3的結果並保留2位小數
+  document.getElementById("result3").innerText = (10 / 3).toFixed(2);
+
+  // (4) 將字串"5"轉換成數值型別，然後加上10
+  const num4 = parseInt("5") + 10;
+  document.getElementById("result4").innerText = num4;
+
+  // (5) 計算圓形的面積，半徑為7
+  const radius = 7;
+  const area = Math.PI * radius * radius;
+  document.getElementById("result5").innerText = area.toFixed(2);
+
+  // (6) 將字串"hello"與字串"world"連起來
+  const combinedStr = "hello" + "world";
+  document.getElementById("result6").innerText = combinedStr;
+
+  // (7) 計算數字123的個位數字
+  const unitsDigit = 123 % 10;
+  document.getElementById("result7").innerText = unitsDigit;
+
+  // (8) 將數字4轉換成字串型別，然後連接上字串"2"
+  const str8 = String(4) + "2";
+  document.getElementById("result8").innerText = str8;
+
+  // (9) 判斷數字15是否在10到20的範圍內
+  const num9 = 15;
+  const isInRange = num9 >= 10 && num9 <= 20;
+  document.getElementById("result9").innerText = isInRange;
+
+  // (10) 判斷字串"hello"是否既不是空字串也不是undefined
+  const str10 = "hello";
+  const isValidString = str10 !== "" && str10 !== undefined;
+  document.getElementById("result10").innerText = isValidString;
+
+  // (11) 判斷數字25是否為偶數
+  const num11 = 25;
+  const isEven = num11 % 2 === 0;
+  document.getElementById("result11").innerText = isEven ? "Even" : "Odd";
+
+  // (12) 比較數字x和數字y的大小
+  const x = 10;
+  const y = 20;
+  const largerNumber = x > y ? x : y;
+  document.getElementById("result12").innerText = largerNumber;
+</script>
+</body>
+</html>

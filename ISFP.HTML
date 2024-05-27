@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsive Layout</title>
+<style>
+   @import url('https://fonts.cdnfonts.com/css/lazy-dog');
+
+  body {
+    font-family:'Lazy Dog', "Microsoft JhengHei";
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    height: 100vh; /* 100%视口高度 */
+    background-color: #f0f0f0;
+  }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center; /* 垂直方向上居中对齐 */
+    justify-content: space-around;
+    padding: 20px;
+    max-width: 1200px;
+    width: 100%;
+  }
+  .image {
+    flex: 1;
+    max-width: 50%;
+    margin-right: 20px;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+  }
+  .image img {
+    max-width: 100%; /* 设置图片最大宽度为容器的50% */
+    max-height: 100%; /* 设置图片最大高度为视口高度的一半 */
+    object-fit: contain; /* 缩放图片以完全包含在容器内 */
+  }
+  .text {
+    flex: 1;
+    max-width: 50%;
+    margin-left: 20px;
+  }
+  .text h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .text p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .button {
+    display: block;
+    max-width: 100px;
+    margin-top: 20px;
+  }
+  .button img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  @media screen and (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+    .image, .text {
+      max-width: 100%;
+      margin: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="image">
+    <img src="ISFP.png" alt="Image">
+    <div class="image-description">
+      <p style="font-size: 40px;">ISFP</p>
+    </div>
+  </div>
+  <div class="text">
+    <h2>旅遊模式： </h2>
+    <p>喜歡參觀藝術和文化展覽，探索富有藝術氛圍的地方，對於旅途過程中的氣味、光線、聲音都十分敏感，能夠察覺出別人沒注意到的細節 </p>
+    <h2>旅遊特性： </h2>
+    <p>● 熱愛藝術景點、自然景觀 </br>
+
+        ● 只會安排大概行程，會因為臨時有趣的地方而變動</br>
+        
+        ● 不喜愛擁擠或嘈雜的景點</br>
+        
+        </p>
+    </br>
+</br>
+        <h2>適合國家： 荷蘭</h2>
+ 
+    <a href="MAP.HTML?ct=nl" class="button">
+      <img src="圖標.png" alt="Button">
+    </a>
+  </div>
+</div>
+<script>
+  // 设置参数
+  var ct = "nl";
+  // 导航到第二个HTML并传递参数
+  
+</script>
+</body>
+</html>

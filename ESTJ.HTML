@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsive Layout</title>
+<style>
+   @import url('https://fonts.cdnfonts.com/css/lazy-dog');
+
+  body {
+    font-family:'Lazy Dog', "Microsoft JhengHei";
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    height: 100vh; /* 100%视口高度 */
+    background-color: #f0f0f0;
+  }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center; /* 垂直方向上居中对齐 */
+    justify-content: space-around;
+    padding: 20px;
+    max-width: 1200px;
+    width: 100%;
+  }
+  .image {
+    flex: 1;
+    max-width: 50%;
+    margin-right: 20px;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+  }
+  .image img {
+    max-width: 100%; /* 设置图片最大宽度为容器的50% */
+    max-height: 100%; /* 设置图片最大高度为视口高度的一半 */
+    object-fit: contain; /* 缩放图片以完全包含在容器内 */
+  }
+  .text {
+    flex: 1;
+    max-width: 50%;
+    margin-left: 20px;
+  }
+  .text h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .text p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .button {
+    display: block;
+    max-width: 100px;
+    margin-top: 20px;
+  }
+  .button img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  @media screen and (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+    .image, .text {
+      max-width: 100%;
+      margin: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="image">
+    <img src="ESTJ.png" alt="Image">
+    <div class="image-description">
+      <p style="font-size: 40px;">ESTJ</p>
+    </div>
+  </div>
+  <div class="text">
+    <h2>旅遊模式： </h2>
+    <p>渴望一場高質量的旅行，可以靜心休養、享受。 </p>
+    <h2>旅遊特性： </h2>
+    <p>● 執行力超強！可以計劃出超順暢的行程 </br>
+
+        ● 可以冷靜處理旅程中的各種狀況</br>
+        
+        ● 每次旅遊都是累積經驗值，不會再犯同個錯誤</br>
+        
+        ● 比起團體旅遊更適合獨自旅遊</p>
+    </br>
+</br>
+        <h2>適合國家： 泰國</h2>
+ 
+    <a href="MAP.HTML?ct=th" class="button">
+      <img src="圖標.png" alt="Button">
+    </a>
+  </div>
+</div>
+<script>
+  // 设置参数
+  var ct = "th";
+  // 导航到第二个HTML并传递参数
+  
+</script>
+</body>
+</html>
