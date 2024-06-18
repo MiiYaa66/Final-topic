@@ -1,4 +1,4 @@
-使用FirstPaged開始，並且開始享受我們推薦的國家
+使用FirstPage開始，並且開始享受我們推薦的國家
 
 PPT:https://drive.google.com/file/d/1BAsSPssdYFzMjubbNOK0f2AmuKk-Wkwx/view
 
