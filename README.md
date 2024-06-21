@@ -1,4 +1,5 @@
 使用FirstPage開始，並且開始享受我們推薦的國家
+EXE.rar解壓縮後可至"dist\win-unpacked\my-electron-app.exe" 使用exe進行程式
 
 PPT:https://drive.google.com/file/d/1BAsSPssdYFzMjubbNOK0f2AmuKk-Wkwx/view
 
